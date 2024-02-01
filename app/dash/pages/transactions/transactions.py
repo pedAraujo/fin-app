@@ -18,6 +18,7 @@ def layout():
                     render_input_new_transaction_card(),
                 ]
             ),
-            dbc.Row([html.Br(), render_table()]),
+            html.Br(),
+            dbc.Row([render_table()]),
         ]
     )
