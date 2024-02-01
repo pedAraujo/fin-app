@@ -1,3 +1,4 @@
+from datetime import datetime
 from dash import html
 import dash_mantine_components as dmc
 from dash_iconify import DashIconify
@@ -5,10 +6,18 @@ from ..callbacks import initialize_callbacks
 
 initialize_callbacks()
 
-input_date = dmc.TextInput(label="Data", type="date", id="input_date")
+input_date = dmc.DatePicker(
+    id="input_date",
+    label="Data",
+    value=datetime.now().date(),
+    inputFormat="DD/MM/YYYY",
+    clearable=False,
+    style={"width": "100%"},
+)
 
-switch_income_expense = dmc.Switch(
-    id="switch_income_expense",
+
+switch_transaction_type = dmc.Switch(
+    id="switch_transaction_type",
     offLabel=DashIconify(icon="ic:outline-money-off", width=20),
     onLabel=DashIconify(icon="ic:outline-attach-money", width=20),
     size="lg",
@@ -21,28 +30,32 @@ input_transaction_name = dmc.TextInput(
     label="Título",
     type="text",
     id="input_transaction_name",
+    required=True,
 )
 
 input_transaction_value = dmc.NumberInput(
     id="input_transaction_value",
     label="Valor",
+    value=0,
     min=0,
     precision=2,
     icon=DashIconify(icon="tabler:currency-real"),
+    required=True,
+    decimalSeparator=",",
 )
 
 selector_transaction_category = dmc.Select(
     id="selector_transaction_category",
     label="Categoria",
+    value="others",
     data=[
         {"label": "Bares", "value": "bars"},
         {"label": "Compras", "value": "shopping"},
         {"label": "Contas", "value": "bills"},
+        {"label": "Educação", "value": "education"},
         {"label": "Entretenimento", "value": "entertainment"},
         {"label": "Impostos e Taxas", "value": "taxes"},
-        {"label": "Educação", "value": "education"},
         {"label": "Mercado", "value": "market"},
-        {"label": "Outros", "value": "others"},
         {"label": "Presentes", "value": "gifts"},
         {"label": "Restaurante", "value": "restaurant"},
         {"label": "Roupas", "value": "clothes"},
@@ -50,6 +63,7 @@ selector_transaction_category = dmc.Select(
         {"label": "Serviços e Assinaturas", "value": "services and subscriptions"},
         {"label": "Transporte", "value": "transport"},
         {"label": "Viagem", "value": "travel"},
+        {"label": "Outros", "value": "others"},
     ],
 )
 
@@ -63,7 +77,7 @@ switch_recurrence = dmc.Switch(
 selector_transaction_frequency = dmc.Select(
     id="selector_transaction_frequency",
     label="Recorrência",
-    value="once",
+    value="one-time",
     data=[
         {"label": "Semanal", "value": "weekly"},
         {"label": "Mensal", "value": "monthly"},
@@ -97,7 +111,7 @@ def render_input_new_transaction_card():
                 [
                     dmc.Group(
                         [
-                            switch_income_expense,
+                            switch_transaction_type,
                             dmc.Text("Adicionar transação"),
                             dmc.Space(),
                         ],
@@ -116,6 +130,7 @@ def render_input_new_transaction_card():
                         [
                             input_date,
                             input_transaction_name,
+                            selector_transaction_category,
                         ]
                     ),
                     dmc.Group(
@@ -134,7 +149,7 @@ def render_input_new_transaction_card():
                 py="xs",
             ),
             dmc.CardSection(
-                [button_add_new],
+                [button_add_new, html.Div(id="transaction_insert_confirmation")],
                 style={"display": "flex", "justify-content": "center"},
                 inheritPadding=True,
                 py="xs",
