@@ -15,7 +15,6 @@ def layout():
             dbc.Row([html.Br()]),
             dbc.Row(
                 [
-                    html.Div(id="hello"),
                     render_input_new_transaction_card(),
                 ]
             ),
