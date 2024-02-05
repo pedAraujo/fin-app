@@ -112,7 +112,9 @@ def render_input_new_transaction_card():
                     dmc.Group(
                         [
                             switch_transaction_type,
-                            dmc.Text("Adicionar transação"),
+                            dmc.Text(
+                                "NOVA TRANSACÃO",
+                            ),
                         ],
                         position="center",
                         align="center",
@@ -149,7 +151,7 @@ def render_input_new_transaction_card():
                 py="xs",
             ),
             dmc.CardSection(
-                [button_add_new, html.Div(id="transaction_insert_confirmation")],
+                [button_add_new],
                 style={"display": "flex", "justify-content": "center"},
                 inheritPadding=True,
                 py="xs",
@@ -158,5 +160,5 @@ def render_input_new_transaction_card():
         withBorder=True,
         shadow="sm",
         radius="md",
-        style={"width": "50%"},
+        style={"maxWidth": "100%"},
     )
