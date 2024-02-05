@@ -1,32 +1,57 @@
 import dash_ag_grid as dag
-import pandas as pd
 import dash_mantine_components as dmc
 
-# simple df to test
-df = pd.DataFrame(
-    {
-        "direction": ["north", "south", "east", "west"],
-        "strength": [1, 2, 3, 4],
-        "frequency": [5, 6, 7, 8],
-    }
-)
 
-columnDefs = [
-    {"field": "direction"},
-    {"field": "strength"},
-    {"field": "frequency"},
+column_defs = [
+    {
+        "field": "date",
+        "headerName": "Data",
+        "valueGetter": {"function": "d3.timeParse('%Y-%m-%d')(params.data.date)"},
+        "valueFormatter": {
+            "function": "d3.timeFormat('%d/%m/%Y')(d3.timeParse('%Y-%m-%d')(params.data.date))"
+        },
+    },
+    {"field": "name", "headerName": "Nome"},
+    {"field": "category", "headerName": "Categoria"},
+    {
+        "field": "value",
+        "headerName": "Valor",
+    },
+    {"field": "frequency", "headerName": "Frequência"},
+    {"field": "description", "headerName": "Descrição"},
+    {"field": "type", "headerName": "Tipo"},
+    {
+        "field": "created_at",
+        "hide": True,
+        "sort": "desc",
+    },
 ]
+
 
 transactions_table = dag.AgGrid(
     id="transactions_table",
-    rowData=df.to_dict("records"),
-    columnDefs=columnDefs,
+    columnDefs=column_defs,
+    defaultColDef={
+        "resizable": True,
+        "sortable": True,
+        "filter": True,
+    },
+    dashGridOptions={
+        "rowSelection": "multiple",
+        "sortingOrder": ["desc", "asc", None],
+        "loadingOverlayComponent": "CustomLoadingOverlay",
+        "loadingOverlayComponentParams": {
+            "loadingMessage": "Carregando...",
+        },
+        "pagination": True,
+        "dataTypeDefinitions": {"function": "dataTypeDefinitions"},
+    },
 )
 
 
-def render_table():
+def render_table_card():
     return dmc.Paper(
-        [transactions_table],
+        [dmc.Text("TRANSAÇÕES"), transactions_table],
         withBorder=True,
         shadow="sm",
         radius="md",

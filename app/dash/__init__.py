@@ -1,9 +1,11 @@
 from dash import Dash
 from app.auth.routes import login_required
 import dash_bootstrap_components as dbc
+import logging
 
 url_base_pathname = "/finapp/"
 app_title = "Fin App - Controle de finanças"
+logger = logging.getLogger(__name__)
 
 
 def init_dash_app(flask_server):

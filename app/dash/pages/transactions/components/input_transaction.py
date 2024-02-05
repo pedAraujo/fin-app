@@ -12,7 +12,6 @@ input_date = dmc.DatePicker(
     value=datetime.now().date(),
     inputFormat="DD/MM/YYYY",
     clearable=False,
-    style={"width": "100%"},
 )
 
 
@@ -31,6 +30,7 @@ input_transaction_name = dmc.TextInput(
     type="text",
     id="input_transaction_name",
     required=True,
+    style={"width": "100%"},
 )
 
 input_transaction_value = dmc.NumberInput(
@@ -112,12 +112,13 @@ def render_input_new_transaction_card():
                     dmc.Group(
                         [
                             switch_transaction_type,
-                            dmc.Text("Adicionar transação"),
-                            dmc.Space(),
+                            dmc.Text(
+                                "NOVA TRANSACÃO",
+                            ),
                         ],
                         position="center",
                         align="center",
-                        grow="True",
+                        spacing=30,
                     ),
                 ],
                 withBorder=True,
@@ -128,8 +129,8 @@ def render_input_new_transaction_card():
                 [
                     dmc.Group(
                         [
-                            input_date,
                             input_transaction_name,
+                            input_date,
                             selector_transaction_category,
                         ]
                     ),
@@ -138,7 +139,8 @@ def render_input_new_transaction_card():
                             input_transaction_value,
                             html.Br(),
                             switch_recurrence,
-                        ]
+                        ],
+                        align="end",
                     ),
                     html.Br(),
                     selector_transaction_frequency,
@@ -149,7 +151,7 @@ def render_input_new_transaction_card():
                 py="xs",
             ),
             dmc.CardSection(
-                [button_add_new, html.Div(id="transaction_insert_confirmation")],
+                [button_add_new],
                 style={"display": "flex", "justify-content": "center"},
                 inheritPadding=True,
                 py="xs",
@@ -158,4 +160,5 @@ def render_input_new_transaction_card():
         withBorder=True,
         shadow="sm",
         radius="md",
+        style={"maxWidth": "100%"},
     )
