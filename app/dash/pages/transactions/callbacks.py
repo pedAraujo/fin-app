@@ -4,7 +4,9 @@ from dash import callback, Input, Output, State, no_update
 from flask import session
 from .transactions_controller import (
     get_transactions_by_user,
+    get_user_by_id,
     insert_transaction,
+    update_user_balance_info,
 )
 
 
@@ -119,7 +121,7 @@ def initialize_callbacks():
         return no_update
 
     @callback(
-        Output("selector_transaction_frequency", "style"),
+        Output("selector_transaction_frequency", "style", allow_duplicate=True),
         Output("selector_transaction_frequency", "value", allow_duplicate=True),
         Input("switch_recurrence", "checked"),
         prevent_initial_call=True,
@@ -137,3 +139,41 @@ def initialize_callbacks():
         user_id = session.get("user_id")
         transactions = get_transactions_by_user(user_id).drop("_id", axis=1)
         return transactions.to_dict("records")
+
+    @callback(
+        Output("input_balance", "value"),
+        Output("input_credit_card_invoice", "value"),
+        Input("transactions_page_container", "children"),
+    )
+    def load_user_balance_and_invoice(_):
+        user_id = session.get("user_id")
+        user = get_user_by_id(user_id)
+        return user["account_balance"]["balance"], user["account_balance"]["invoice"]
+
+    @callback(
+        Output("resulting_balance_value", "children"),
+        Input("input_balance", "value"),
+        Input("input_credit_card_invoice", "value"),
+        prevent_initial_call=True,
+    )
+    def calculate_resulting_balance(balance, invoice):
+        balance = float(balance)
+        invoice = float(invoice)
+        total_balance = balance - invoice
+        return f"R$ {total_balance:.2f}" if balance and invoice else "R$ 0,00"
+
+    # update user balance and invoice on db
+    @callback(
+        Output("input_balance", "value", allow_duplicate=True),
+        Output("input_credit_card_invoice", "value", allow_duplicate=True),
+        Input("input_balance", "value"),
+        Input("input_credit_card_invoice", "value"),
+        prevent_initial_call=True,
+    )
+    def update_user_balance_and_invoice(balance, invoice):
+        if balance != 0 and invoice != 0:
+            user_id = session.get("user_id")
+            balance_info = {"balance": float(balance), "invoice": float(invoice)}
+            if update_user_balance_info(user_id, balance_info):
+                return balance, invoice
+        return no_update, no_update
