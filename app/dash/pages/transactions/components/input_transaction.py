@@ -2,9 +2,7 @@ from datetime import datetime
 from dash import html
 import dash_mantine_components as dmc
 from dash_iconify import DashIconify
-from ..callbacks import initialize_callbacks
 
-initialize_callbacks()
 
 input_date = dmc.DatePicker(
     id="input_date",
@@ -160,5 +158,4 @@ def render_input_new_transaction_card():
         withBorder=True,
         shadow="sm",
         radius="md",
-        style={"maxWidth": "100%"},
     )

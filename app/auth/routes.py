@@ -74,7 +74,12 @@ def register():
         if error is None:
             try:
                 password = passlib.hash.sha256_crypt.hash(password)
-                new_user = {"username": username, "email": email, "password": password}
+                new_user = {
+                    "username": username,
+                    "email": email,
+                    "password": password,
+                    "account_balance": {"balance": 0, "invoice": 0},
+                }
                 db.users.insert_one(new_user)
                 flash("User registered successfully")
                 return redirect(url_for("auth.login"))

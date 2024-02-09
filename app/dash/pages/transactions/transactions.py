@@ -1,12 +1,15 @@
 import dash
 from dash import html
 import dash_bootstrap_components as dbc
-
-# from .callbacks import initialize_callbacks
+import dash_mantine_components as dmc
 from .components.input_transaction import render_input_new_transaction_card
+from .components.bank_info_input import render_bank_info_input_card
 from .components.table import render_table_card
+from .callbacks import initialize_callbacks
 
 dash.register_page(__name__, path="/")
+
+initialize_callbacks()
 
 
 def layout():
@@ -16,7 +19,12 @@ def layout():
             dbc.Row([html.Br()]),
             dbc.Row(
                 [
-                    render_input_new_transaction_card(),
+                    dmc.Group(
+                        [
+                            render_input_new_transaction_card(),
+                            render_bank_info_input_card(),
+                        ]
+                    ),
                 ]
             ),
             html.Br(),

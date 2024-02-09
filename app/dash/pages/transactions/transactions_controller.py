@@ -1,5 +1,26 @@
 from app.mongo import db
 import pandas as pd
+from app import logger
+
+
+from bson.objectid import ObjectId
+
+
+def get_user_by_id(user_id):
+    user = db.users.find_one({"_id": ObjectId(user_id)})
+    return user
+
+
+def update_user_balance_info(user_id, balance_info):
+    try:
+        updated = db.users.update_one(
+            {"_id": ObjectId(user_id)},
+            {"$set": {"account_balance": balance_info}},
+        )
+        return updated
+    except Exception as e:
+        logger.error(f"Error updating user balance info: {e}")
+        return False
 
 
 def get_transactions_by_user(user_id):
